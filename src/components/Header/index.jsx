@@ -35,6 +35,15 @@ export function Header({ handleAddTask }) {
         </button>
       </form>
       <div className={styles.newTaskFormx}>
+        <p
+          style={{
+            position: "absolute",
+            top: "10px",
+            left: "10px",
+          }}
+        >
+          {localStorage.getItem("email")}
+        </p>
         <button
           to="/"
           style={{

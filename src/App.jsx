@@ -1,6 +1,6 @@
-// import "./App.css";
-
 import Routers from "./routes";
+import { AuthProvider } from "./pages/AuthContext";
+import { ErrorBoundary } from "./components/ErrorBoundary";
 
 import { setAuthToken } from "./helpers/setAuthToken";
 
@@ -13,7 +13,11 @@ function App() {
 
   return (
     <div className="App">
-      <Routers />
+      <ErrorBoundary>
+        <AuthProvider>
+          <Routers />
+        </AuthProvider>
+      </ErrorBoundary>
     </div>
   );
 }

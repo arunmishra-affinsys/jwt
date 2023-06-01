@@ -1,7 +1,15 @@
 import { Task } from "../Task";
 import styles from "./tasks.module.css";
+import { useTodoContext } from "../../TodoScreen";
 
-export function Tasks({ tasks, onDelete, onComplete }) {
+export function Tasks({
+  onDelete,
+  onComplete,
+  onAddSubtask,
+  onToggleSubtaskCompleted,
+  onDeleteSubtask,
+}) {
+  const { tasks } = useTodoContext();
   const tasksQuantity = tasks.length;
   const completedTasks = tasks.filter((task) => task.isCompleted).length;
 
@@ -28,6 +36,9 @@ export function Tasks({ tasks, onDelete, onComplete }) {
             task={task}
             onDelete={onDelete}
             onComplete={onComplete}
+            onAddSubtask={onAddSubtask}
+            onToggleSubtaskCompleted={onToggleSubtaskCompleted}
+            onDeleteSubtask={onDeleteSubtask}
           />
         ))}
       </div>

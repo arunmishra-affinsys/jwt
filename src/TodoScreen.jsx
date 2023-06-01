@@ -49,13 +49,25 @@ function Todo() {
   function toggleTaskCompletedById(taskId) {
     const newTasks = tasks.map((task) => {
       if (task.id === taskId) {
-        return {
+        const newTask = {
           ...task,
           isCompleted: !task.isCompleted,
+        };
+
+        // Update completion status of subtasks
+        const newSubtasks = newTask.subtasks.map((subtask) => ({
+          ...subtask,
+          isCompleted: newTask.isCompleted,
+        }));
+
+        return {
+          ...newTask,
+          subtasks: newSubtasks,
         };
       }
       return task;
     });
+
     setTasksAndSave(newTasks);
   }
 
@@ -92,13 +104,21 @@ function Todo() {
           }
           return subtask;
         });
+
+        // Check if all subtasks are completed
+        const allSubtasksCompleted = newSubtasks.every(
+          (subtask) => subtask.isCompleted
+        );
+
         return {
           ...task,
           subtasks: newSubtasks,
+          isCompleted: allSubtasksCompleted, // Update parent task's completion status
         };
       }
       return task;
     });
+
     setTasksAndSave(newTasks);
   }
 
@@ -121,7 +141,6 @@ function Todo() {
 
   return (
     <TodoContext.Provider value={{ tasks }}>
-      {/* <p style={{ color: "white" }}>{isLoggedIn}</p> */}
       <Header handleAddTask={addTask} />
       <Tasks
         onDelete={deleteTaskById}

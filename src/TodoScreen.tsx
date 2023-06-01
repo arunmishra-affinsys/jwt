@@ -6,10 +6,28 @@ import { AuthContext } from "./pages/AuthContext";
 
 const LOCAL_STORAGE_KEY = "todo:tasks";
 
-const TodoContext = createContext();
+interface Task {
+  id: string;
+  title: string;
+  isCompleted: boolean;
+  subtasks: Subtask[];
+}
+
+interface Subtask {
+  id: string;
+  title: string;
+  isCompleted: boolean;
+}
+
+interface TodoContextValue {
+  tasks: Task[];
+}
+
+const TodoContext = createContext<TodoContextValue | undefined>(undefined);
 
 function Todo() {
-  const [tasks, setTasks] = useState([]);
+  const [tasks, setTasks] = useState<Task[]>([]);
+  const { isLoggedIn } = useContext(AuthContext);
 
   function loadSavedTasks() {
     const saved = localStorage.getItem(LOCAL_STORAGE_KEY);
@@ -18,7 +36,7 @@ function Todo() {
     }
   }
 
-  function setTasksAndSave(newTasks) {
+  function setTasksAndSave(newTasks: Task[]) {
     setTasks(newTasks);
     localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(newTasks));
   }
@@ -27,8 +45,8 @@ function Todo() {
     loadSavedTasks();
   }, []);
 
-  function addTask(taskTitle) {
-    //To sanitize the inputs
+  function addTask(taskTitle: string) {
+    // To sanitize the inputs
     let clean = DOMPurify.sanitize(taskTitle);
     setTasksAndSave([
       ...tasks,
@@ -41,12 +59,12 @@ function Todo() {
     ]);
   }
 
-  function deleteTaskById(taskId) {
+  function deleteTaskById(taskId: string) {
     const newTasks = tasks.filter((task) => task.id !== taskId);
     setTasksAndSave(newTasks);
   }
 
-  function toggleTaskCompletedById(taskId) {
+  function toggleTaskCompletedById(taskId: string) {
     const newTasks = tasks.map((task) => {
       if (task.id === taskId) {
         return {
@@ -59,7 +77,7 @@ function Todo() {
     setTasksAndSave(newTasks);
   }
 
-  function addSubtask(taskId, subtaskTitle) {
+  function addSubtask(taskId: string, subtaskTitle: string) {
     let clean = DOMPurify.sanitize(subtaskTitle);
     const newTasks = tasks.map((task) => {
       if (task.id === taskId) {
@@ -80,7 +98,7 @@ function Todo() {
     setTasksAndSave(newTasks);
   }
 
-  function toggleSubtaskCompleted(taskId, subtaskId) {
+  function toggleSubtaskCompleted(taskId: string, subtaskId: string) {
     const newTasks = tasks.map((task) => {
       if (task.id === taskId) {
         const newSubtasks = task.subtasks.map((subtask) => {
@@ -102,7 +120,7 @@ function Todo() {
     setTasksAndSave(newTasks);
   }
 
-  function onDeleteSubtask(taskId, subtaskId) {
+  function onDeleteSubtask(taskId: string, subtaskId: string) {
     const updatedTasks = tasks.map((task) => {
       if (task.id === taskId) {
         const updatedSubtasks = task.subtasks.filter(
@@ -135,7 +153,11 @@ function Todo() {
 }
 
 function useTodoContext() {
-  return useContext(TodoContext);
+  const context = useContext(TodoContext);
+  if (!context) {
+    throw new Error("useTodoContext must be used within a TodoProvider");
+  }
+  return context;
 }
 
 export { Todo, useTodoContext };

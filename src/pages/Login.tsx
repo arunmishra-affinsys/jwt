@@ -1,17 +1,16 @@
-import React, { useContext } from "react";
+import { useContext } from "react";
 import axios from "axios";
 import { setAuthToken } from "../helpers/setAuthToken";
 import "./styles.css";
 import img from "../assets/todoLogo.svg";
 import { AuthContext } from "./AuthContext";
-import { history } from "../helpers/history";
 
 function Login() {
   const { login } = useContext(AuthContext);
-  // console.log(isLoggedIn);
-  const handleSubmit = (email, password) => {
-    console.log(email);
+
+  const handleSubmit = (email: string, password: string) => {
     login(email);
+
     const loginPayload = {
       email: "eve.holt@reqres.in",
       password: "cityslicka",
@@ -20,17 +19,13 @@ function Login() {
     axios
       .post("https://reqres.in/api/login", loginPayload)
       .then((response) => {
-        //get token from response
         const token = response.data.token;
 
-        //set JWT token to local
         localStorage.setItem("token", token);
         localStorage.setItem("email", email);
-        //set token to axios common header
         setAuthToken(token);
-        //redirect user to home page
+
         window.location.href = "/dashboard";
-        // history.push("/dashboard");
       })
       .catch((err) => console.log(err));
   };
@@ -41,8 +36,12 @@ function Login() {
         className="form-auth"
         onSubmit={(event) => {
           event.preventDefault();
-          const [email, password] = event.target.elements;
-          handleSubmit(email.value, password.value);
+          const emailInput = document.querySelector<HTMLInputElement>("#email");
+          const passwordInput =
+            document.querySelector<HTMLInputElement>("#password");
+          const email = emailInput?.value ?? "";
+          const password = passwordInput?.value ?? "";
+          handleSubmit(email, password);
         }}
       >
         <img src={img} alt="" />
@@ -67,4 +66,5 @@ function Login() {
     </div>
   );
 }
+
 export default Login;

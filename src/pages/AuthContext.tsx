@@ -1,16 +1,27 @@
 import React, { createContext, useState } from "react";
 
+// Define the AuthContext interface
+interface AuthContextType {
+  isLoggedIn: boolean | undefined;
+  setIsLoggedIn: React.Dispatch<React.SetStateAction<boolean | undefined>>;
+  token: string;
+  login: (token: string) => void;
+  logout: () => void;
+}
+
 // Create the Auth Context
-export const AuthContext = createContext();
+export const AuthContext = createContext<AuthContextType>(
+  {} as AuthContextType
+);
 
 // Create the Auth Provider
-export const AuthProvider = ({ children }) => {
-  const [isLoggedIn, setIsLoggedIn] = useState();
+export const AuthProvider: any = ({ children }: any) => {
+  const [isLoggedIn, setIsLoggedIn] = useState<boolean | undefined>();
   const [token, setToken] = useState("");
 
   // Function to update login status and token
-  const login = (token) => {
-    setIsLoggedIn(token);
+  const login = (token: string) => {
+    setIsLoggedIn(true);
     setToken(token);
   };
 
@@ -26,7 +37,7 @@ export const AuthProvider = ({ children }) => {
   };
 
   // Value object to be passed to consumers
-  const authContextValue = {
+  const authContextValue: AuthContextType = {
     isLoggedIn,
     setIsLoggedIn,
     token,

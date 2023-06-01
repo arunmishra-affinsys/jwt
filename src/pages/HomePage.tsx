@@ -1,4 +1,6 @@
-import Todo from "../TodoScreen";
+import React from "react";
+import { Todo } from "../TodoScreen";
+
 function HomePage() {
   return <Todo />;
 }

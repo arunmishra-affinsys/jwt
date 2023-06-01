@@ -1,27 +1,29 @@
+import { useState, ChangeEvent, FormEvent } from "react";
+import { AiOutlinePlusCircle } from "react-icons/ai";
 import todoLogo from "../../assets/todoLogo.svg";
 import styles from "./header.module.css";
-import { AiOutlinePlusCircle } from "react-icons/ai";
-import { useState } from "react";
-import { history } from "../../helpers/history";
-import { Link } from "react-router-dom";
 
-export function Header({ handleAddTask }) {
+interface HeaderProps {
+  handleAddTask: (title: string) => void;
+}
+
+export function Header({ handleAddTask }: HeaderProps) {
   const [title, setTitle] = useState("");
 
-  function handleSubmit(event) {
+  function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
 
     handleAddTask(title);
     setTitle("");
   }
 
-  function onChangeTitle(event) {
+  function onChangeTitle(event: ChangeEvent<HTMLInputElement>) {
     setTitle(event.target.value);
   }
 
   return (
-    <header className={styles.header}>
-      <img src={todoLogo} />
+    <header className={styles?.header}>
+      <img src={todoLogo} alt="Todo Logo" />
 
       <form onSubmit={handleSubmit} className={styles.newTaskForm}>
         <input
@@ -30,7 +32,7 @@ export function Header({ handleAddTask }) {
           onChange={onChangeTitle}
           value={title}
         />
-        <button>
+        <button type="submit">
           Create <AiOutlinePlusCircle size={20} />
         </button>
       </form>
@@ -45,7 +47,6 @@ export function Header({ handleAddTask }) {
           {localStorage.getItem("email")}
         </p>
         <button
-          to="/"
           style={{
             position: "absolute",
             top: "10px",

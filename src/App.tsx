@@ -1,11 +1,12 @@
+import React from "react";
 import Routers from "./routes";
 import { AuthProvider } from "./pages/AuthContext";
 import { ErrorBoundary } from "./components/ErrorBoundary";
 
 import { setAuthToken } from "./helpers/setAuthToken";
 
-function App() {
-  //check jwt token
+function App(): JSX.Element {
+  // check jwt token
   const token = localStorage.getItem("token");
   if (token) {
     setAuthToken(token);

@@ -2,8 +2,8 @@ import React, { useState } from "react";
 import styles from "./task.module.css";
 import { BsFillCheckCircleFill } from "react-icons/bs";
 import { TbTrash } from "react-icons/tb";
-import { AiFillEdit } from "react-icons/ai";
 import { MdOutlineEdit } from "react-icons/md";
+import { AiOutlineCheck } from "react-icons/ai";
 
 const style = {};
 
@@ -149,7 +149,7 @@ export function Task({
 
         {isTaskEditable ? (
           <button className={styles.saveButton} onClick={handleSaveTask}>
-            Save
+            <AiOutlineCheck size={20} />
           </button>
         ) : (
           <button className={styles.deleteButton} onClick={handleEditTask}>
@@ -213,7 +213,7 @@ export function Task({
                 className={styles.saveButton}
                 onClick={() => handleSaveSubtask(subtask.id)}
               >
-                Save
+                <AiOutlineCheck size={20} />
               </button>
             ) : (
               <button

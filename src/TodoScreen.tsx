@@ -2,7 +2,6 @@ import { useEffect, useState, createContext, useContext } from "react";
 import { Header } from "./components/Header";
 import { Tasks } from "./components/Tasks";
 import DOMPurify from "dompurify";
-import { AuthContext } from "./pages/AuthContext";
 
 const LOCAL_STORAGE_KEY = "todo:tasks";
 
@@ -19,15 +18,14 @@ interface Subtask {
   isCompleted: boolean;
 }
 
-interface TodoContextValue {
+interface TodoContextProps {
   tasks: Task[];
 }
 
-const TodoContext = createContext<TodoContextValue | undefined>(undefined);
+const TodoContext = createContext<TodoContextProps | undefined>(undefined);
 
 function Todo() {
   const [tasks, setTasks] = useState<Task[]>([]);
-  const { isLoggedIn } = useContext(AuthContext);
 
   function loadSavedTasks() {
     const saved = localStorage.getItem(LOCAL_STORAGE_KEY);
@@ -67,13 +65,25 @@ function Todo() {
   function toggleTaskCompletedById(taskId: string) {
     const newTasks = tasks.map((task) => {
       if (task.id === taskId) {
-        return {
+        const newTask: Task = {
           ...task,
           isCompleted: !task.isCompleted,
+        };
+
+        // Update completion status of subtasks
+        const newSubtasks = newTask.subtasks.map((subtask) => ({
+          ...subtask,
+          isCompleted: newTask.isCompleted,
+        }));
+
+        return {
+          ...newTask,
+          subtasks: newSubtasks,
         };
       }
       return task;
     });
+
     setTasksAndSave(newTasks);
   }
 
@@ -110,13 +120,21 @@ function Todo() {
           }
           return subtask;
         });
+
+        // Check if all subtasks are completed
+        const allSubtasksCompleted = newSubtasks.every(
+          (subtask) => subtask.isCompleted
+        );
+
         return {
           ...task,
           subtasks: newSubtasks,
+          isCompleted: allSubtasksCompleted, // Update parent task's completion status
         };
       }
       return task;
     });
+
     setTasksAndSave(newTasks);
   }
 
@@ -126,9 +144,17 @@ function Todo() {
         const updatedSubtasks = task.subtasks.filter(
           (subtask) => subtask.id !== subtaskId
         );
+        let allSubtasksCompleted = false;
+        if (updatedSubtasks.length) {
+          allSubtasksCompleted = updatedSubtasks.every(
+            (subtask) => subtask.isCompleted
+          );
+        }
+
         return {
           ...task,
           subtasks: updatedSubtasks,
+          isCompleted: allSubtasksCompleted, // Update parent task's completion status
         };
       }
       return task;
@@ -137,9 +163,44 @@ function Todo() {
     setTasksAndSave(updatedTasks);
   }
 
+  const onEditTask = (taskId: string, newTitle: string) => {
+    // Assuming you have a state variable called "tasks" that holds the list of tasks
+    const updatedTasks = tasks.map((task) => {
+      if (task.id === taskId) {
+        return { ...task, title: newTitle };
+      }
+      return task;
+    });
+
+    setTasks(updatedTasks);
+  };
+
+  // Function to handle editing a subtask title
+  const onEditSubtask = (
+    taskId: string,
+    subtaskId: string,
+    newTitle: string
+  ) => {
+    // Assuming you have a state variable called "tasks" that holds the list of tasks
+    const updatedTasks = tasks.map((task) => {
+      if (task.id === taskId) {
+        const updatedSubtasks = task.subtasks.map((subtask) => {
+          if (subtask.id === subtaskId) {
+            return { ...subtask, title: newTitle };
+          }
+          return subtask;
+        });
+
+        return { ...task, subtasks: updatedSubtasks };
+      }
+      return task;
+    });
+
+    setTasks(updatedTasks);
+  };
+
   return (
     <TodoContext.Provider value={{ tasks }}>
-      {/* <p style={{ color: "white" }}>{isLoggedIn}</p> */}
       <Header handleAddTask={addTask} />
       <Tasks
         onDelete={deleteTaskById}
@@ -147,17 +208,15 @@ function Todo() {
         onAddSubtask={addSubtask}
         onToggleSubtaskCompleted={toggleSubtaskCompleted}
         onDeleteSubtask={onDeleteSubtask}
+        onEditTask={onEditTask}
+        onEditSubtask={onEditSubtask}
       />
     </TodoContext.Provider>
   );
 }
 
 function useTodoContext() {
-  const context = useContext(TodoContext);
-  if (!context) {
-    throw new Error("useTodoContext must be used within a TodoProvider");
-  }
-  return context;
+  return useContext(TodoContext);
 }
 
 export { Todo, useTodoContext };

@@ -2,7 +2,6 @@ import { useEffect, useState, createContext, useContext } from "react";
 import { Header } from "./components/Header";
 import { Tasks } from "./components/Tasks";
 import DOMPurify from "dompurify";
-import { AuthContext } from "./pages/AuthContext";
 
 const LOCAL_STORAGE_KEY = "todo:tasks";
 
@@ -128,9 +127,17 @@ function Todo() {
         const updatedSubtasks = task.subtasks.filter(
           (subtask) => subtask.id !== subtaskId
         );
+        let allSubtasksCompleted = false;
+        if (updatedSubtasks.length) {
+          allSubtasksCompleted = updatedSubtasks.every(
+            (subtask) => subtask.isCompleted
+          );
+        }
+
         return {
           ...task,
           subtasks: updatedSubtasks,
+          isCompleted: allSubtasksCompleted, // Update parent task's completion status
         };
       }
       return task;
@@ -138,6 +145,38 @@ function Todo() {
 
     setTasksAndSave(updatedTasks);
   }
+
+  const onEditTask = (taskId, newTitle) => {
+    // Assuming you have a state variable called "tasks" that holds the list of tasks
+    const updatedTasks = tasks.map((task) => {
+      if (task.id === taskId) {
+        return { ...task, title: newTitle };
+      }
+      return task;
+    });
+
+    setTasks(updatedTasks);
+  };
+
+  // Function to handle editing a subtask title
+  const onEditSubtask = (taskId, subtaskId, newTitle) => {
+    // Assuming you have a state variable called "tasks" that holds the list of tasks
+    const updatedTasks = tasks.map((task) => {
+      if (task.id === taskId) {
+        const updatedSubtasks = task.subtasks.map((subtask) => {
+          if (subtask.id === subtaskId) {
+            return { ...subtask, title: newTitle };
+          }
+          return subtask;
+        });
+
+        return { ...task, subtasks: updatedSubtasks };
+      }
+      return task;
+    });
+
+    setTasks(updatedTasks);
+  };
 
   return (
     <TodoContext.Provider value={{ tasks }}>
@@ -148,6 +187,8 @@ function Todo() {
         onAddSubtask={addSubtask}
         onToggleSubtaskCompleted={toggleSubtaskCompleted}
         onDeleteSubtask={onDeleteSubtask}
+        onEditTask={onEditTask}
+        onEditSubtask={onEditSubtask}
       />
     </TodoContext.Provider>
   );

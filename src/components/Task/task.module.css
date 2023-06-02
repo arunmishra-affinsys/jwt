@@ -49,6 +49,12 @@ p.textCompleted {
   color: #808080;
 }
 
+.editButton {
+  background: none;
+  border: none;
+  color: #808080;
+}
+
 .subtask {
   width: 100%;
   background: #262626;

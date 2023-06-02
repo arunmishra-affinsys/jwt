@@ -8,6 +8,8 @@ export function Tasks({
   onAddSubtask,
   onToggleSubtaskCompleted,
   onDeleteSubtask,
+  onEditTask,
+  onEditSubtask,
 }) {
   const { tasks } = useTodoContext();
   const tasksQuantity = tasks.length;
@@ -39,6 +41,8 @@ export function Tasks({
             onAddSubtask={onAddSubtask}
             onToggleSubtaskCompleted={onToggleSubtaskCompleted}
             onDeleteSubtask={onDeleteSubtask}
+            onEditTask={onEditTask}
+            onEditSubtask={onEditSubtask}
           />
         ))}
       </div>

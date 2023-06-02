@@ -1,8 +1,6 @@
-import React from "react";
-import Routers from "./routes";
-import { AuthProvider } from "./pages/AuthContext";
+import Routes from "./routes/routes";
+import { AuthProvider } from "./helpers/AuthContext";
 import { ErrorBoundary } from "./components/ErrorBoundary";
-
 import { setAuthToken } from "./helpers/setAuthToken";
 
 function App(): JSX.Element {
@@ -16,7 +14,7 @@ function App(): JSX.Element {
     <div className="App">
       <ErrorBoundary>
         <AuthProvider>
-          <Routers />
+          <Routes />
         </AuthProvider>
       </ErrorBoundary>
     </div>

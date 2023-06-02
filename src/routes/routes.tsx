@@ -1,16 +1,16 @@
 import { Redirect, Switch, Route, Router } from "react-router-dom";
-import RouteGuard from "./components/RouteGuard";
-import { Todo } from "./TodoScreen";
-import LoginWrapper from "./pages/LoginWrapper";
-import { history } from "./helpers/history";
+import RouteGuard from "./RouteGuard";
+import { Todo } from "../pages/TodoScreen";
+import Login from "../pages/Login";
+import { history } from "../helpers/history";
 
 function Routes() {
   return (
     <Router history={history}>
       <Switch>
         <RouteGuard exact path="/dashboard" component={Todo} />
-        <Route exact path="/" component={LoginWrapper} />
-        <Route path="/login" component={LoginWrapper} />
+        <Route exact path="/" component={Login} />
+        <Route path="/login" component={Login} />
         <Redirect to="/login" />
       </Switch>
     </Router>

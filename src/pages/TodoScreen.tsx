@@ -1,6 +1,6 @@
 import { useEffect, useState, createContext, useContext } from "react";
-import { Header } from "./components/Header";
-import { Tasks } from "./components/Tasks";
+import { Header } from "../components/Header";
+import { Tasks } from "../components/Tasks";
 import DOMPurify from "dompurify";
 
 const LOCAL_STORAGE_KEY = "todo:tasks";

@@ -1,6 +1,6 @@
 import { Task } from "../Task";
 import styles from "./tasks.module.css";
-import { useTodoContext } from "../../TodoScreen";
+import { useTodoContext } from "../../pages/TodoScreen";
 
 interface TasksProps {
   onDelete: (taskId: string) => void;

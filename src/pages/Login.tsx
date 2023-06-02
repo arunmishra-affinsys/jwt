@@ -1,9 +1,9 @@
 import { useContext } from "react";
 import axios from "axios";
 import { setAuthToken } from "../helpers/setAuthToken";
-import "./styles.css";
+import "../styles/styles.css";
 import img from "../assets/todoLogo.svg";
-import { AuthContext } from "./AuthContext";
+import { AuthContext } from "../helpers/AuthContext";
 
 function Login() {
   const { login } = useContext(AuthContext);

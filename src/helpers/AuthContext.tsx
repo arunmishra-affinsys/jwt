@@ -1,6 +1,4 @@
 import React, { createContext, useState } from "react";
-
-// Define the AuthContext interface
 interface AuthContextType {
   isLoggedIn: boolean | undefined;
   setIsLoggedIn: React.Dispatch<React.SetStateAction<boolean | undefined>>;
